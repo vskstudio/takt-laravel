@@ -27,7 +27,10 @@ final class TaktServiceProvider extends ServiceProvider
             ]));
         });
 
-        $this->app->singleton(Takt::class, function ($app) {
+        // Scoped (not singleton): the visitor IP/user-agent are bound from the
+        // current request, so the instance must not survive across requests under
+        // long-lived workers such as Octane.
+        $this->app->scoped(Takt::class, function ($app) {
             $c = $app['config']['takt'];
             $takt = new Takt($c['endpoint'], $c['domain'], $c['api_key']);
             $request = $app['request'] ?? null;
