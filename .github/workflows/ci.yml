@@ -36,3 +36,5 @@ jobs:
       - run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --dev --no-interaction --no-update
       - run: composer update --no-interaction --no-progress
       - run: vendor/bin/phpunit
+      - run: vendor/bin/phpstan analyse
+      - run: vendor/bin/pint --test

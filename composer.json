@@ -31,7 +31,5 @@
     }
   },
   "config": { "allow-plugins": { "php-http/discovery": true } },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "repositories": [{ "type": "vcs", "url": "https://github.com/vskstudio/takt-core-php" }]
+  "minimum-stability": "stable"
 }
