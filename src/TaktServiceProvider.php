@@ -12,7 +12,7 @@ final class TaktServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/takt.php', 'takt');
+        $this->mergeConfigFrom(__DIR__.'/../config/takt.php', 'takt');
 
         $this->app->singleton(SnippetRenderer::class, function ($app) {
             $c = $app['config']['takt'];
@@ -41,10 +41,10 @@ final class TaktServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->publishes([__DIR__ . '/../config/takt.php' => config_path('takt.php')], 'takt-config');
+        $this->publishes([__DIR__.'/../config/takt.php' => config_path('takt.php')], 'takt-config');
 
         Blade::directive('takt', static function () {
-            return "<?php echo app(\\Vskstudio\\Takt\\SnippetRenderer::class)->render(); ?>";
+            return '<?php echo app(\\Vskstudio\\Takt\\SnippetRenderer::class)->render(); ?>';
         });
     }
 }

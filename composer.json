@@ -3,9 +3,16 @@
   "description": "Laravel integration for Takt analytics: @takt Blade directive + Takt facade for server-side events.",
   "type": "library",
   "license": "MIT",
+  "keywords": ["analytics", "takt", "laravel", "privacy", "tracking", "blade"],
+  "homepage": "https://github.com/vskstudio/takt-laravel",
+  "authors": [{ "name": "vskstudio" }],
+  "support": {
+    "issues": "https://github.com/vskstudio/takt-laravel/issues",
+    "source": "https://github.com/vskstudio/takt-laravel"
+  },
   "require": {
     "php": ">=8.1",
-    "vskstudio/takt-core-php": "^0.1 || dev-main",
+    "vskstudio/takt-core-php": "^0.1",
     "illuminate/support": "^10.0 || ^11.0 || ^12.0",
     "guzzlehttp/guzzle": "^7.8"
   },
@@ -26,9 +33,5 @@
   "config": { "allow-plugins": { "php-http/discovery": true } },
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "repositories": [{
-    "name": "core",
-    "type": "path",
-    "url": "../takt-core-php"
-  }]
+  "repositories": [{ "type": "vcs", "url": "https://github.com/vskstudio/takt-core-php" }]
 }
