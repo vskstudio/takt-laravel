@@ -33,6 +33,7 @@ This writes `config/takt.php`. All values are environment-driven:
 | ------------------------ | --------------------------- | ------------------------------------------------------------------------ |
 | `TAKT_DOMAIN`            | `''`                        | The site/domain registered in Takt that data is attributed to.           |
 | `TAKT_ENDPOINT`          | `https://takt.example.com`  | Base URL of your Takt ingest endpoint.                                    |
+| `TAKT_SCRIPT_ORIGIN`     | `null`                      | First-party origin to serve the tracker + derive the endpoint from (`{origin}/api/event`) — your Takt domain or a custom domain to dodge ad-blockers (endpoint wins over it). |
 | `TAKT_API_KEY`           | `null`                      | Ingest-scoped API key used for server-side events (see below).           |
 | `TAKT_MODE`              | `inline`                    | Snippet delivery mode: `inline`, `cdn`, or `asset`.                      |
 | `TAKT_OUTBOUND`          | `false`                     | Track clicks on outbound links.                                          |

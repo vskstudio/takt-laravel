@@ -53,6 +53,12 @@ final class ServiceProviderTest extends TestCase
         $this->assertTrue(config('takt.exclude_localhost'));
     }
 
+    public function test_script_origin_defaults_to_null(): void
+    {
+        // First-party/anti-adblock origin is opt-in: unset by default.
+        $this->assertNull(config('takt.script_origin'));
+    }
+
     public function test_config_is_publishable_under_takt_config_tag(): void
     {
         $paths = ServiceProvider::pathsToPublish(TaktServiceProvider::class, 'takt-config');

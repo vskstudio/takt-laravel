@@ -20,6 +20,7 @@ final class TaktServiceProvider extends ServiceProvider
             return new SnippetRenderer(Options::fromArray([
                 'domain' => $c['domain'],
                 'endpoint' => $c['endpoint'],
+                'scriptOrigin' => $c['script_origin'],
                 'mode' => $c['mode'],
                 'outbound' => $c['outbound'],
                 'files' => $c['files'],
