@@ -38,7 +38,11 @@ This writes `config/takt.php`. All values are environment-driven:
 | `TAKT_MODE`              | `inline`                    | Snippet delivery mode: `inline`, `cdn`, or `asset`.                      |
 | `TAKT_OUTBOUND`          | `false`                     | Track clicks on outbound links.                                          |
 | `TAKT_FILES`            | `false`                     | Track file download clicks.                                              |
+| `TAKT_FILE_EXTENSIONS`   | `''`                        | Comma-separated extensions to count as downloads (e.g. `pdf,zip,docx`). Empty keeps the tracker's default list. |
+| `TAKT_TAGGED`            | `false`                     | Track elements tagged in HTML with `data-takt-event`.                    |
+| `TAKT_NOT_FOUND`         | `false`                     | Track 404 pageviews.                                                      |
 | `TAKT_EXCLUDE_LOCALHOST` | `true`                      | Skip tracking when running on localhost.                                 |
+| `TAKT_NONCE`             | `null`                      | CSP nonce for the inline `<script>` (request-scoped — see config notes). |
 
 Example `.env`:
 
