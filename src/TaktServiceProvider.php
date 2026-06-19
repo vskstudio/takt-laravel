@@ -24,7 +24,11 @@ final class TaktServiceProvider extends ServiceProvider
                 'mode' => $c['mode'],
                 'outbound' => $c['outbound'],
                 'files' => $c['files'],
+                'tagged' => $c['tagged'],
+                'notFound' => $c['not_found'],
+                'fileExtensions' => $c['file_extensions'],
                 'excludeLocalhost' => $c['exclude_localhost'],
+                'nonce' => $c['nonce'],
             ]));
         });
 

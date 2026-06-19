@@ -11,5 +11,14 @@ return [
     'mode' => env('TAKT_MODE', 'inline'),
     'outbound' => env('TAKT_OUTBOUND', false),
     'files' => env('TAKT_FILES', false),
+    'tagged' => env('TAKT_TAGGED', false),
+    'not_found' => env('TAKT_NOT_FOUND', false),
+    // Restrict download tracking to these extensions (comma-separated env, e.g.
+    // "pdf,zip,docx"). Empty leaves the tracker's built-in extension list.
+    'file_extensions' => array_filter(array_map('trim', explode(',', (string) env('TAKT_FILE_EXTENSIONS', '')))),
     'exclude_localhost' => env('TAKT_EXCLUDE_LOCALHOST', true),
+    // CSP nonce for the inline <script>. A CSP nonce is request-scoped: set a
+    // static one here only if your policy uses one, otherwise rebind the
+    // SnippetRenderer per request with a fresh nonce.
+    'nonce' => env('TAKT_NONCE'),
 ];
