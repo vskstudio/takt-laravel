@@ -84,6 +84,8 @@ Add the `@takt` directive to the `<head>` of your layout:
   network requests, nothing to host.
 - **`cdn`** — references the script from the Takt CDN.
 - **`asset`** — references a self-hosted copy of the script served from your own application.
+- **`sdk`** — loads the full SDK as an ES module and boots it with `init()`. Required for
+  `TAKT_SCRUB_URL` (custom URL rewriting), which cannot be expressed as a data attribute.
 
 ## Server-side events
 
