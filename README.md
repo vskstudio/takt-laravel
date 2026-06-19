@@ -35,7 +35,7 @@ This writes `config/takt.php`. All values are environment-driven:
 | `TAKT_ENDPOINT`          | `https://takt.example.com`  | Base URL of your Takt ingest endpoint.                                    |
 | `TAKT_SCRIPT_ORIGIN`     | `null`                      | First-party origin to serve the tracker + derive the endpoint from (`{origin}/api/event`) — your Takt domain or a custom domain to dodge ad-blockers (endpoint wins over it). |
 | `TAKT_API_KEY`           | `null`                      | Ingest-scoped API key used for server-side events (see below).           |
-| `TAKT_MODE`              | `inline`                    | Snippet delivery mode: `inline`, `cdn`, or `asset`.                      |
+| `TAKT_MODE`              | `inline`                    | Snippet delivery mode: `inline`, `cdn`, `asset`, or `sdk` (full ES-module `init()`, required for `TAKT_SCRUB_URL`). |
 | `TAKT_OUTBOUND`          | `false`                     | Track clicks on outbound links.                                          |
 | `TAKT_FILES`            | `false`                     | Track file download clicks.                                              |
 | `TAKT_FILE_EXTENSIONS`   | `''`                        | Comma-separated extensions to count as downloads (e.g. `pdf,zip,docx`). Empty keeps the tracker's default list. |
@@ -43,6 +43,12 @@ This writes `config/takt.php`. All values are environment-driven:
 | `TAKT_NOT_FOUND`         | `false`                     | Track 404 pageviews.                                                      |
 | `TAKT_EXCLUDE_LOCALHOST` | `true`                      | Skip tracking when running on localhost.                                 |
 | `TAKT_NONCE`             | `null`                      | CSP nonce for the inline `<script>` (request-scoped — see config notes). |
+| `TAKT_SAMPLE_RATE`       | `null`                      | Sample a fraction of hits, e.g. `0.5` keeps ~50%. Unset tracks everything. |
+| `TAKT_TRACK_QUERY`       | `null`                      | Keep the raw query string + hash in tracked URLs (default strips them).  |
+| `TAKT_QUERY_PARAMS`      | `''`                        | Comma-separated query params to keep when `TAKT_TRACK_QUERY` is off (e.g. `utm_source,utm_medium`). |
+| `TAKT_RESPECT_DNT`       | `null`                      | Set to `false` to stop honoring the browser Do-Not-Track header.        |
+| `TAKT_ENABLED`           | `null`                      | Kill-switch: set to `false` to disable tracking entirely.               |
+| `TAKT_SCRUB_URL`         | `null`                      | Raw JS function to rewrite URLs before sending, e.g. `(u) => u.split('#')[0]`. **Requires `TAKT_MODE=sdk` and is dev-controlled only** — it is injected verbatim into the page; never build it from user input. |
 
 Example `.env`:
 

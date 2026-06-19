@@ -55,4 +55,38 @@ final class SnippetModeTest extends TestCase
         $this->assertStringContainsString('data-auto="outbound,downloads,tagged,404"', $html);
         $this->assertStringContainsString('data-downloads-ext="pdf,zip"', $html);
     }
+
+    public function test_advanced_options_drive_data_attrs(): void
+    {
+        $this->app['config']->set('takt.mode', 'cdn');
+        $this->app['config']->set('takt.sample_rate', 0.5);
+        $this->app['config']->set('takt.track_query', true);
+        $this->app['config']->set('takt.query_params', ['utm_source', 'utm_medium']);
+        $this->app['config']->set('takt.respect_dnt', false);
+        $this->app['config']->set('takt.enabled', false);
+        $this->app->forgetInstance(SnippetRenderer::class);
+
+        $html = $this->app->make(SnippetRenderer::class)->render();
+
+        $this->assertStringContainsString('data-sample-rate="0.5"', $html);
+        $this->assertStringContainsString('data-track-query="true"', $html);
+        $this->assertStringContainsString('data-query-params="utm_source,utm_medium"', $html);
+        $this->assertStringContainsString('data-respect-dnt="false"', $html);
+        $this->assertStringContainsString('data-enabled="false"', $html);
+    }
+
+    public function test_sdk_mode_renders_module_with_scrub_url(): void
+    {
+        $this->app['config']->set('takt.mode', 'sdk');
+        $this->app['config']->set('takt.sample_rate', 0.25);
+        $this->app['config']->set('takt.scrub_url', '(u)=>u.split("#")[0]');
+        $this->app->forgetInstance(SnippetRenderer::class);
+
+        $html = $this->app->make(SnippetRenderer::class)->render();
+
+        $this->assertStringContainsString('<script type="module"', $html);
+        $this->assertStringContainsString('import{init}from', $html);
+        $this->assertStringContainsString('"sampleRate":0.25', $html);
+        $this->assertStringContainsString('scrubUrl:(u)=>u.split("#")[0]', $html);
+    }
 }

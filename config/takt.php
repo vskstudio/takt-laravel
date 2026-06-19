@@ -21,4 +21,24 @@ return [
     // static one here only if your policy uses one, otherwise rebind the
     // SnippetRenderer per request with a fresh nonce.
     'nonce' => env('TAKT_NONCE'),
+
+    // --- Advanced options ---------------------------------------------------
+    // Leave unset (null) to keep the tracker defaults; only a non-default value
+    // is rendered.
+    //
+    // Sample a fraction of pageviews/events, e.g. 0.5 keeps ~50%.
+    'sample_rate' => env('TAKT_SAMPLE_RATE'),
+    // Keep the raw query string + hash in tracked URLs (default strips them).
+    'track_query' => env('TAKT_TRACK_QUERY'),
+    // Allowlist of query params to keep when track_query is off (comma-separated
+    // env, e.g. "utm_source,utm_medium").
+    'query_params' => array_filter(array_map('trim', explode(',', (string) env('TAKT_QUERY_PARAMS', '')))),
+    // Set to false to stop honoring the browser Do-Not-Track header.
+    'respect_dnt' => env('TAKT_RESPECT_DNT'),
+    // Kill-switch: set to false to disable tracking entirely.
+    'enabled' => env('TAKT_ENABLED'),
+    // Raw JS function to rewrite URLs before they are sent, e.g.
+    // "(u) => u.split('#')[0]". Requires mode=sdk and is DEV-CONTROLLED ONLY —
+    // it is injected verbatim into the page; never build it from user input.
+    'scrub_url' => env('TAKT_SCRUB_URL'),
 ];
