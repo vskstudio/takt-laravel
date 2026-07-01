@@ -32,6 +32,7 @@ final class TaktServiceProvider extends ServiceProvider
                 'sampleRate' => $c['sample_rate'],
                 'trackQuery' => $c['track_query'],
                 'queryParams' => $c['query_params'],
+                'exclude' => $c['exclude'],
                 'respectDnt' => $c['respect_dnt'],
                 'enabled' => $c['enabled'],
                 'scrubUrl' => $c['scrub_url'],

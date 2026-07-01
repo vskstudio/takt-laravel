@@ -89,4 +89,16 @@ final class SnippetModeTest extends TestCase
         $this->assertStringContainsString('"sampleRate":0.25', $html);
         $this->assertStringContainsString('scrubUrl:(u)=>u.split("#")[0]', $html);
     }
+
+    public function test_sdk_mode_passes_exclude_paths(): void
+    {
+        $this->app['config']->set('takt.mode', 'sdk');
+        $this->app['config']->set('takt.exclude', ['/app', '/account']);
+        $this->app->forgetInstance(SnippetRenderer::class);
+
+        $html = $this->app->make(SnippetRenderer::class)->render();
+
+        $this->assertStringContainsString('<script type="module"', $html);
+        $this->assertStringContainsString('"exclude":["\/app","\/account"]', $html);
+    }
 }

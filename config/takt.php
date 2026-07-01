@@ -33,6 +33,9 @@ return [
     // Allowlist of query params to keep when track_query is off (comma-separated
     // env, e.g. "utm_source,utm_medium").
     'query_params' => array_filter(array_map('trim', explode(',', (string) env('TAKT_QUERY_PARAMS', '')))),
+    // Path prefixes never tracked (comma-separated env, e.g. "/app,/account").
+    // Requires mode=sdk — the minimal snippet can't express it.
+    'exclude' => array_filter(array_map('trim', explode(',', (string) env('TAKT_EXCLUDE', '')))),
     // Set to false to stop honoring the browser Do-Not-Track header.
     'respect_dnt' => env('TAKT_RESPECT_DNT'),
     // Kill-switch: set to false to disable tracking entirely.
