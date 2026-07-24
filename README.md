@@ -2,6 +2,7 @@
 
 
 > 📚 **Documentation** — [taktlytics.com/docs/wrappers/laravel](https://taktlytics.com/docs/wrappers/laravel)
+
 Laravel integration for [Takt](https://github.com/vskstudio) analytics. Drop a single `@takt`
 Blade directive in your layout for privacy-friendly client-side tracking, and use the `Takt`
 facade to send server-side events straight from your application code.
