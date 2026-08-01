@@ -32,7 +32,7 @@ This writes `config/takt.php`. All values are environment-driven:
 | Env variable             | Default                     | Description                                                              |
 | ------------------------ | --------------------------- | ------------------------------------------------------------------------ |
 | `TAKT_DOMAIN`            | `''`                        | The site/domain registered in Takt that data is attributed to.           |
-| `TAKT_ENDPOINT`          | `https://taktlytics.com`    | Base URL of your Takt ingest endpoint. Defaults to the hosted Takt origin. |
+| `TAKT_ENDPOINT`          | `https://taktlytics.com`    | Where events are collected. Defaults to the hosted Takt origin. Both the service origin (`https://taktlytics.com`) and the full collect URL (`https://taktlytics.com/api/event`) are accepted and behave identically — see [Endpoint](#endpoint). |
 | `TAKT_SCRIPT_ORIGIN`     | `null`                      | First-party origin to serve the tracker + derive the endpoint from (`{origin}/api/event`) — a custom domain you proxy through to dodge ad-blockers (endpoint wins over it). |
 | `TAKT_API_KEY`           | `null`                      | Ingest-scoped API key used for server-side events (see below).           |
 | `TAKT_MODE`              | `inline`                    | Snippet delivery mode: `inline`, `cdn`, `asset`, or `sdk` (full ES-module `init()`, required for `TAKT_SCRUB_URL`). |
@@ -55,10 +55,27 @@ Example `.env`:
 
 ```dotenv
 TAKT_DOMAIN=example.com
-TAKT_ENDPOINT=https://ingest.takt.io
 TAKT_API_KEY=ingest_xxxxxxxxxxxxxxxx
 TAKT_MODE=inline
 ```
+
+### Endpoint
+
+`TAKT_ENDPOINT` feeds two code paths at once: the browser snippet, which needs the full collect
+URL, and the server-side sender, which needs the origin it appends `/api/event` to. Both forms are
+therefore accepted and normalised for you, so these two settings are equivalent:
+
+```dotenv
+TAKT_ENDPOINT=https://taktlytics.com
+TAKT_ENDPOINT=https://taktlytics.com/api/event
+```
+
+A value carrying any other path is taken as the collect URL verbatim — that is the case for a
+same-origin first-party proxy (`TAKT_ENDPOINT=/collect`) used to dodge ad-blockers. Leave it unset
+to talk to the hosted Takt service.
+
+Takt itself is a managed service hosted in Europe; only the `/takt.js` measurement script can be
+served from your own domain (see `asset` mode and `TAKT_SCRIPT_ORIGIN`).
 
 ## Client-side tracking
 
@@ -83,8 +100,9 @@ Add the `@takt` directive to the `<head>` of your layout:
 
 - **`inline`** (default) — the script is embedded directly in the rendered HTML. Zero extra
   network requests, nothing to host.
-- **`cdn`** — references the script from the Takt CDN.
-- **`asset`** — references a self-hosted copy of the script served from your own application.
+- **`cdn`** — references the script from jsDelivr (`@vskstudio/takt-core`).
+- **`asset`** — references a copy of the script served by your own application from
+  `/takt/takt.auto.js` (prefixed with `TAKT_SCRIPT_ORIGIN` when set).
 - **`sdk`** — loads the full SDK as an ES module and boots it with `init()`. Required for
   `TAKT_SCRUB_URL` (custom URL rewriting), which cannot be expressed as a data attribute.
 
@@ -104,11 +122,21 @@ Takt::pageview();
 ```
 
 Server-side events automatically attribute to the current request's IP address and User-Agent, so
-they are correlated with the visitor that triggered them. You can optionally pass an explicit URL
-as the last argument to either method.
+they are correlated with the visitor that triggered them. Both methods accept an explicit URL and
+referrer as their last arguments (`event(name, props, revenue, url, referrer)`,
+`pageview(url, referrer)`).
 
 > **API key scope:** `TAKT_API_KEY` must be an **ingest-scoped** key bound to the configured
 > `TAKT_DOMAIN`. Keep it server-side only — it is never exposed to the browser.
+
+## Container bindings
+
+The service provider registers exactly two services:
+
+| Service                        | Binding     | Notes                                                                 |
+| ------------------------------ | ----------- | --------------------------------------------------------------------- |
+| `Vskstudio\Takt\SnippetRenderer` | `singleton` | Built once from config; resolved by the `@takt` Blade directive. Rebind it per request if you need a fresh CSP nonce. |
+| `Vskstudio\Takt\Takt`            | `scoped`    | Backs the `Takt` facade. **Not** a singleton: it captures the current request's IP/User-Agent, so it is rebuilt on each request scope and never leaks attribution across requests under long-lived workers such as Octane. |
 
 ## License
 
