@@ -5,8 +5,10 @@ namespace Vskstudio\Takt\Laravel\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static void event(string $name, array $props = [], ?\Vskstudio\Takt\Revenue $revenue = null, ?string $url = null)
- * @method static void pageview(?string $url = null)
+ * @method static void event(string $name, array $props = [], ?\Vskstudio\Takt\Revenue $revenue = null, ?string $url = null, ?string $referrer = null)
+ * @method static void pageview(?string $url = null, ?string $referrer = null)
+ * @method static \Vskstudio\Takt\Takt withVisitor(?string $ip, ?string $userAgent)
+ * @method static \Vskstudio\Takt\Takt strict()
  */
 final class Takt extends Facade
 {

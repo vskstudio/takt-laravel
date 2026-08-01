@@ -2,6 +2,12 @@
 
 return [
     'domain' => env('TAKT_DOMAIN', ''),
+    // Où sont collectés les événements. L'origine du service
+    // ("https://taktlytics.com") comme l'URL complète de collecte
+    // ("https://taktlytics.com/api/event") sont acceptées et donnent le même
+    // résultat : le snippet navigateur et l'envoi serveur-à-serveur reçoivent
+    // chacun la forme dont ils ont besoin. Une valeur portant un autre chemin
+    // (proxy première-partie, ex. "/collect") est utilisée telle quelle.
     'endpoint' => env('TAKT_ENDPOINT', 'https://taktlytics.com'),
     // First-party origin to serve the tracker + derive the endpoint from
     // ({origin}/api/event) — a custom domain you proxy through to dodge

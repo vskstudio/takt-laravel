@@ -7,7 +7,7 @@ use Vskstudio\Takt\Takt;
 
 final class FacadeTest extends TestCase
 {
-    public function test_facade_root_is_underlying_takt_singleton(): void
+    public function test_facade_root_is_the_container_bound_takt(): void
     {
         $root = TaktFacade::getFacadeRoot();
 
