@@ -30,7 +30,7 @@ final class ServiceProviderTest extends TestCase
         $this->assertNotSame($first, $second);
     }
 
-    public function test_snippet_renderer_resolves_as_singleton(): void
+    public function test_snippet_renderer_is_shared_within_a_request(): void
     {
         $a = $this->app->make(SnippetRenderer::class);
         $b = $this->app->make(SnippetRenderer::class);
