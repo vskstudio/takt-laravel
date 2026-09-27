@@ -11,15 +11,15 @@
         "tracking",
         "blade"
     ],
-    "homepage": "https://github.com/vskstudio/takt-laravel",
+    "homepage": "https://github.com/taktlytics/takt-laravel",
     "authors": [
         {
             "name": "vskstudio"
         }
     ],
     "support": {
-        "issues": "https://github.com/vskstudio/takt-laravel/issues",
-        "source": "https://github.com/vskstudio/takt-laravel"
+        "issues": "https://github.com/taktlytics/takt-laravel/issues",
+        "source": "https://github.com/taktlytics/takt-laravel"
     },
     "require": {
         "php": ">=8.1",
