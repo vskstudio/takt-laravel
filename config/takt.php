@@ -50,4 +50,6 @@ return [
     // "(u) => u.split('#')[0]". Requires mode=sdk and is DEV-CONTROLLED ONLY —
     // it is injected verbatim into the page; never build it from user input.
     'scrub_url' => env('TAKT_SCRUB_URL'),
+    'redact_routes' => array_filter(array_map('trim', explode(',', (string) env('TAKT_REDACT_ROUTES', '')))),
+    'route_templates' => (bool) env('TAKT_ROUTE_TEMPLATES', false),
 ];

@@ -52,6 +52,8 @@ This writes `config/takt.php`. All values are environment-driven:
 | `TAKT_EXCLUDE`           | `''`                        | Comma-separated path prefixes never tracked (e.g. `/app,/account`). Requires `TAKT_MODE=sdk`; segment-bounded. |
 | `TAKT_RESPECT_DNT`       | `null`                      | Set to `false` to stop honoring the browser Do-Not-Track header.        |
 | `TAKT_ENABLED`           | `null`                      | Kill-switch: set to `false` to disable tracking entirely.               |
+| `TAKT_REDACT_ROUTES`     | `''`                        | Comma-separated sensitive routes sent as their pattern (e.g. `/verify/{token},/reset/{code}`). Snippet requires `TAKT_MODE=sdk`. See [Route redaction](#route-redaction). |
+| `TAKT_ROUTE_TEMPLATES`   | `false`                     | Send every page as its Laravel route template (`/users/{id}`). Snippet requires `TAKT_MODE=sdk`. See [Route redaction](#route-redaction). |
 | `TAKT_SCRUB_URL`         | `null`                      | Raw JS function to rewrite URLs before sending, e.g. `(u) => u.split('#')[0]`. **Requires `TAKT_MODE=sdk` and is dev-controlled only** — it is injected verbatim into the page; never build it from user input. |
 
 Example `.env`:
@@ -127,10 +129,48 @@ Takt::pageview();
 Server-side events automatically attribute to the current request's IP address and User-Agent, so
 they are correlated with the visitor that triggered them. Both methods accept an explicit URL and
 referrer as their last arguments (`event(name, props, revenue, url, referrer)`,
-`pageview(url, referrer)`).
+`pageview(url, referrer)`), followed by an optional `route` template (see
+[Route redaction](#route-redaction)).
 
 > **API key scope:** `TAKT_API_KEY` must be an **ingest-scoped** key bound to the configured
 > `TAKT_DOMAIN`. Keep it server-side only — it is never exposed to the browser.
+
+## Route redaction
+
+Query strings are stripped by default, but path segments are sent as they are: `/verify/abc123`
+leaks the token. Two opt-in settings replace real paths with route templates, in the snippet and in
+server-side events alike. In the snippet both require `TAKT_MODE=sdk`: the minimal snippet of the
+other modes cannot honor them, so the `SnippetRenderer` throws.
+
+```php
+// config/takt.php
+'mode' => 'sdk',
+'redact_routes' => ['/verify/{token}', '/reset/{code}'],
+```
+
+`redact_routes` lists the sensitive routes. A matching path is sent as the pattern, every other path
+keeps its real value. Patterns accept the Laravel syntax (`{token}`, `{page?}`) as well as
+`[param]`, `[[optional]]`, `[...rest]`, `:param`, `*` and `**`. The browser SDK reads `{token}` as
+`[token]`, so a browser pageview reports `/verify/[token]` where a server event reports
+`/verify/{token}`; write `/verify/[token]` if both must land on the same row.
+
+```php
+'mode' => 'sdk',
+'route_templates' => true,
+```
+
+`route_templates` sends every page as its route template: `/users/42` becomes `/users/{id}`. The
+package reads it from the matched route of the current request (`$request->route()->uri()`), renders
+it into the `@takt` snippet and uses it as the default `route` of every `Takt::pageview()` and
+`Takt::event()` sent during that request. It suits fully private apps; on a public site it merges
+every article into one row. A request with no matched route keeps its real path, still subject to
+`redact_routes`.
+
+Any server-side call can pick its own route template:
+
+```php
+Takt::event('Verified', url: url()->current(), route: '/verify/{token}');
+```
 
 ## Container bindings
 
@@ -138,7 +178,7 @@ The service provider registers exactly two services:
 
 | Service                        | Binding     | Notes                                                                 |
 | ------------------------------ | ----------- | --------------------------------------------------------------------- |
-| `Vskstudio\Takt\SnippetRenderer` | `singleton` | Built once from config; resolved by the `@takt` Blade directive. Rebind it per request if you need a fresh CSP nonce. |
+| `Vskstudio\Takt\SnippetRenderer` | `scoped`    | Built from config once per request scope, so it carries the current route template; resolved by the `@takt` Blade directive. Rebind it per request if you need a fresh CSP nonce. |
 | `Vskstudio\Takt\Takt`            | `scoped`    | Backs the `Takt` facade. **Not** a singleton: it captures the current request's IP/User-Agent, so it is rebuilt on each request scope and never leaks attribution across requests under long-lived workers such as Octane. |
 
 ## License
