@@ -1,5 +1,20 @@
 # vskstudio/takt-laravel
 
+## 0.6.0
+
+### Minor Changes
+
+- Route redaction. `redact_routes` (`TAKT_REDACT_ROUTES`) lists sensitive routes
+  sent as their pattern instead of the real path (`/verify/abc` becomes
+  `/verify/{token}`), and `route_templates` (`TAKT_ROUTE_TEMPLATES`) sends every
+  page as its Laravel route template, read from the matched route of the current
+  request. Both apply to the `@takt` snippet, where they require `mode: sdk`,
+  and to the `Takt` facade: the current route template becomes the default
+  `route` of `pageview()` and `event()`, which also accept an explicit `route`.
+- The `SnippetRenderer` binding is now `scoped` instead of `singleton`, so the
+  rendered snippet follows the current request under long-lived workers.
+- Requires `vskstudio/takt-core-php` 0.6.
+
 ## 0.5.1
 
 ### Patch Changes
